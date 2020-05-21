@@ -1,0 +1,102 @@
+tutorial 1
+
+create a project directory
+pip3 install pipenv  --- creating virtual environment
+pipenv install django djangorestframework django-rest-knox // installing django and rest
+django-admin startproject leadmanager // create a new project with settings.py
+python manage.py startapp leads // create lead app
+on settings.py- update installed apps
+
+create models in models.py of new app
+python manage.py makemigrations leads // create a model lead
+create a file called serializer inside app(leads) serialize.app
+create a file called api.py inside app, import routers and register
+
+update urls.py in root
+
+
+tutorial 2
+
+python manage.py startapp frontend //create a frontend app
+mkdir -p ./frontend/src/components
+mkdir -p ./frontend/{static,templates}/frontend
+go to root directory, do npm init for package.json
+npm i -D wbpack webpack-cli
+npm i -D @babel/core babel-preset-env babel-loader @babel/preset-react babel-plugin-transform-class-properties
+npm i react react-dom prop-		types
+create .babelrc file and create presets and plugins
+create webpack.config.js	modules.exports->modules->rules->test,exclude,use-loader
+update scripts in package.json dev for webpack// webpack --mode development index.js main.js
+also for build webpack --mode production index.js main.js
+
+create index.js
+create App.js. render ReactDom
+create index.html add styles and bootstrap scripts	
+add frontend app to settings.py	
+add index method to views.py which renders index.html
+create views.py on frontend folder and map urlpattern to index method of views
+add path to urlpattern array of leadmanager urls.py
+
+create Layout component to render
+
+
+***********************************************************************
+
+tuturiol 3 
+
+npm in redux redux-thunk redux-devtools-extension
+
+
+store.js
+
+store= createStore(rootreducer, initialstate,composewithdevtools(applymiddleware[...middleware]))
+
+create rootreducer
+
+export default combineReducer({})
+
+connect react with redux by importing Provider from react-redux
+connect with Redux
+
+
+
+************************************************************************
+tutorial 5
+authentication
+
+1. update models of lead app
+bring in User model
+from django.contrib.auth.models import User
+update mode schema with owner
+owner = models.ForeignKey(
+        User, related_name="leads", on_delete=models.CASCADE, null=True)
+
+2. make migrations and run migrations
+python manage.py makemigrations
+
+python manage.py migrate
+
+3.api.py of leads app
+change queryset = Lead.objects.all() to return self query
+
+def get_queryset(self):
+	return self.request.user.leads.all()
+change permission class
+permission_classes =[permissions.isAuthenticated]
+
+def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+4. add knox parameter to installed apps in settings.py
+
+5. create REST_FRAMEWORK node
+REST_FRAMEWORK={
+    'DEFAULT_AUTHENTICATION_CLASSES':('knox.auth.TokenAuthentication')
+}
+
+5. run python manage.py runserver
+
+6. create new app accounts
+7. add new app to installed_apps
+8. create serializer file inside accounts app
+
